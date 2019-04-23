@@ -1,0 +1,29 @@
+[package]
+name = "diskspace"
+version = "0.1.0"
+authors = ["Fenhl <fenhl@fenhl.net>"]
+edition = "2018"
+
+[lib]
+name = "diskspace"
+path = "src/lib.rs"
+
+[[bin]]
+name = "diskspace"
+path = "src/main.rs"
+doc = false
+test = false
+bench = false
+
+[[bin]]
+name = "bitbar-diskspace"
+path = "src/bitbar.rs"
+doc = false
+test = false
+bench = false
+
+[dependencies]
+systemstat = "*"
+
+[dependencies.bitbar]
+git = "https://github.com/fenhl/rust-bitbar"
