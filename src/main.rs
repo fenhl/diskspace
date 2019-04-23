@@ -1,14 +1,14 @@
 #[macro_use] extern crate clap;
 
 use std::{
-    convert::Infallible,
     io,
     num::{
         ParseFloatError,
         ParseIntError
     },
     path::Path,
-    process::exit
+    process::exit,
+    string::ParseError
 };
 use bytesize::ByteSize;
 use clap::{
@@ -30,8 +30,8 @@ wrapped_enum! {
     }
 }
 
-impl From<Infallible> for Error {
-    fn from(i: Infallible) -> Error {
+impl From<ParseError> for Error {
+    fn from(i: ParseError) -> Error {
         match i {}
     }
 }
