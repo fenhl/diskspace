@@ -1,6 +1,6 @@
 [package]
 name = "diskspace"
-version = "0.1.0"
+version = "2.0.0"
 authors = ["Fenhl <fenhl@fenhl.net>"]
 edition = "2018"
 
@@ -23,7 +23,14 @@ test = false
 bench = false
 
 [dependencies]
-systemstat = "*"
+bytesize = "*"
+clap = "2"
+#systemstat = "*" #WAITING FOR https://github.com/myfreeweb/systemstat/pull/53
+wrapped_enum = "*"
 
 [dependencies.bitbar]
 git = "https://github.com/fenhl/rust-bitbar"
+
+[dependencies.systemstat]
+git = "https://github.com/fenhl/systemstat"
+branch = "patch-1"
