@@ -85,7 +85,7 @@ dependencies = [
  "serde 1.0.90 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.90 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.39 (registry+https://github.com/rust-lang/crates.io-index)",
- "systemstat 0.1.4 (git+https://github.com/fenhl/systemstat?branch=patch-1)",
+ "systemstat 0.1.4 (git+https://github.com/myfreeweb/systemstat)",
  "wrapped_enum 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "xdg-basedir 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -246,7 +246,7 @@ dependencies = [
 [[package]]
 name = "systemstat"
 version = "0.1.4"
-source = "git+https://github.com/fenhl/systemstat?branch=patch-1#67052a114c317cdcc7262c24e58faa1a46fb2178"
+source = "git+https://github.com/myfreeweb/systemstat#d36e6123e07f3d118800859d8914438a252a39b4"
 dependencies = [
  "bytesize 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "chrono 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -389,7 +389,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum smallvec 0.6.9 (registry+https://github.com/rust-lang/crates.io-index)" = "c4488ae950c49d403731982257768f48fada354a5203fe81f9bb6f43ca9002be"
 "checksum strsim 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
 "checksum syn 0.15.32 (registry+https://github.com/rust-lang/crates.io-index)" = "846620ec526c1599c070eff393bfeeeb88a93afa2513fc3b49f1fea84cf7b0ed"
-"checksum systemstat 0.1.4 (git+https://github.com/fenhl/systemstat?branch=patch-1)" = "<none>"
+"checksum systemstat 0.1.4 (git+https://github.com/myfreeweb/systemstat)" = "<none>"
 "checksum termion 1.5.2 (registry+https://github.com/rust-lang/crates.io-index)" = "dde0593aeb8d47accea5392b39350015b5eccb12c0d98044d856983d89548dea"
 "checksum textwrap 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
 "checksum time 0.1.42 (registry+https://github.com/rust-lang/crates.io-index)" = "db8dcfca086c1143c9270ac42a2bbd8a7ee477b78ac8e45b19abfb0cbede4b6f"
