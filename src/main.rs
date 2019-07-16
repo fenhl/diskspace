@@ -73,24 +73,24 @@ fn main() -> Result<(), Error> {
         |min_percent| min_percent.parse::<f64>().map(|min_percent| min_percent / 100.0)
     )?;
     let min_space = matches.value_of("min-space").map_or_else(
-        || Ok(if matches.is_present("zsh") { ByteSize::gib(5) } else if matches.is_present("min-percent") { ByteSize::b(0) } else { ByteSize::b(usize::max_value()) }),
-        |min_space| min_space.parse::<usize>().map(|min_space| ByteSize::gib(min_space))
+        || Ok(if matches.is_present("zsh") { ByteSize::gib(5) } else if matches.is_present("min-percent") { ByteSize::b(0) } else { ByteSize::b(u64::max_value()) }),
+        |min_space| min_space.parse::<u64>().map(|min_space| ByteSize::gib(min_space))
     )?;
     let path = matches.value_of("PATH").map_or(
         Ok(Path::new("/").to_owned()),
         |path| path.parse()
     )?;
     let fs = System::new().mount_at(path)?;
-    if fs.avail < min_space || (fs.avail.as_usize() as f64 / fs.total.as_usize() as f64) < min_fraction {
+    if fs.avail < min_space || (fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) < min_fraction {
         if matches.is_present("quiet") {
             exit(1);
         } else if matches.is_present("verbose") {
             println!("Available disk space: {}", fs.avail);
-            println!("{} bytes free", fs.avail.as_usize());
-            println!("{} bytes total", fs.total.as_usize());
-            println!("{} percent", (100.0 * fs.avail.as_usize() as f64 / fs.total.as_usize() as f64) as u8);
+            println!("{} bytes free", fs.avail.as_u64());
+            println!("{} bytes total", fs.total.as_u64());
+            println!("{} percent", (100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) as u8);
         } else if matches.is_present("bytes") {
-            println!("{}", fs.avail.as_usize());
+            println!("{}", fs.avail.as_u64());
         } else {
             println!("[disk: {}]", fs.avail);
         }

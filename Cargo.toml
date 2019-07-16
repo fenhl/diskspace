@@ -19,7 +19,7 @@ test = false
 bench = false
 
 [dependencies]
-bytesize = "0.1"
+bytesize = "1"
 clap = "2"
 serde = "1"
 serde_derive = "1"

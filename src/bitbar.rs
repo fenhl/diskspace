@@ -66,15 +66,15 @@ fn bitbar() -> Result<Menu, Error> {
         .into_iter()
         .map(|vol| sys.mount_at(&vol).map(|fs| (vol, fs)))
         .collect::<Result<BTreeMap<_, _>, _>>()?;
-    Ok(if volumes.iter().any(|(_, fs)| fs.avail < ByteSize::gib(5) || (fs.avail.as_usize() as f64 / fs.total.as_usize() as f64) < 0.05) {
+    Ok(if volumes.iter().any(|(_, fs)| fs.avail < ByteSize::gib(5) || (fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) < 0.05) {
         vec![
             ContentItem::new(volumes.iter().map(|(_, fs)| fs.avail).min().expect("no volumes")).template_image(DISK_ICON).into(),
             MenuItem::Sep,
         ].into_iter().chain(
-            volumes.into_iter().map(|(vol, fs)| MenuItem::new(format!("{}: {}% ({})", vol.display(), (100.0 * fs.avail.as_usize() as f64 / fs.total.as_usize() as f64) as u8, fs.avail)))
+            volumes.into_iter().map(|(vol, fs)| MenuItem::new(format!("{}: {}% ({})", vol.display(), (100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) as u8, fs.avail)))
         ).chain(vec![
             MenuItem::Sep,
-            ContentItem::new("Open DaisyDisk").command(vec!["/usr/bin/open", "-a", "DaisyDisk"]).into()
+            ContentItem::new("Open DaisyDisk").command(["/usr/bin/open", "-a", "DaisyDisk"]).into()
         ]).collect()
     } else {
         Menu::default()
