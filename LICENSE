@@ -1,3 +1,8 @@
+This project includes the file assets/hdd-o.png, which is the "hdd-o" icon from Fork Awesome (https://forkaweso.me).
+Fork Awesome is licensed under the SIL OFL 1.1 (https://scripts.sil.org/OFL).
+
+The licence for the rest of the repository follows:
+
 MIT License
 
 Copyright (c) 2019 Max Dominik Weber ("Fenhl")
@@ -19,6 +24,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-This project includes the "hdd-o" icon from Fork Awesome (https://forkaweso.me).
-Fork Awesome is licensed under the SIL OFL 1.1 (https://scripts.sil.org/OFL).

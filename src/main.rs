@@ -1,33 +1,33 @@
 #[macro_use] extern crate clap;
 
-use std::{
-    io,
-    num::{
-        ParseFloatError,
-        ParseIntError
+use {
+    std::{
+        io,
+        num::{
+            ParseFloatError,
+            ParseIntError
+        },
+        path::Path,
+        process::exit,
+        string::ParseError
     },
-    path::Path,
-    process::exit,
-    string::ParseError
-};
-use bytesize::ByteSize;
-use clap::{
-    App,
-    Arg
-};
-use systemstat::{
-    Platform,
-    System
-};
-use wrapped_enum::wrapped_enum;
-
-wrapped_enum! {
-    #[derive(Debug)]
-    enum Error {
-        Io(io::Error),
-        ParseFloat(ParseFloatError),
-        ParseInt(ParseIntError)
+    bytesize::ByteSize,
+    clap::{
+        App,
+        Arg
+    },
+    derive_more::From,
+    systemstat::{
+        Platform,
+        System
     }
+};
+
+#[derive(Debug, From)]
+enum Error {
+    Io(io::Error),
+    ParseFloat(ParseFloatError),
+    ParseInt(ParseIntError)
 }
 
 impl From<ParseError> for Error {

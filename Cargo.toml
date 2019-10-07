@@ -21,15 +21,16 @@ bench = false
 [dependencies]
 bytesize = "1"
 clap = "2"
+derive_more = "*"
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
-#systemstat = "*" #WAITING FOR https://github.com/myfreeweb/systemstat/pull/53
-wrapped_enum = "*"
+#systemstat = "*" #WAITING FOR a release after https://github.com/myfreeweb/systemstat/pull/53
 xdg-basedir = "1"
 
 [dependencies.bitbar]
 git = "https://github.com/fenhl/rust-bitbar"
+features = ["base64"]
 
 [dependencies.systemstat]
 git = "https://github.com/myfreeweb/systemstat"
