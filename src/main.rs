@@ -48,7 +48,10 @@ fn app() -> App<'static, 'static> {
             .help("Produce more detailed output."))
         .arg(Arg::with_name("bytes")
             .long("bytes")
-            .help("Print the raw number of bytes instead of a human-readable format."))
+            .help("Print the raw number of bytes instead of a human-readable format. Ignored if --verbose is given."))
+        .arg(Arg::with_name("files")
+            .long("files")
+            .help("Print the raw number of available files instead of a human-readable format. Ignored if --verbose or --bytes is given."))
         .arg(Arg::with_name("min-percent")
             .long("min-percent")
             .takes_value(true)
@@ -59,11 +62,20 @@ fn app() -> App<'static, 'static> {
             .takes_value(true)
             .value_name("MIN_SPACE")
             .help("Produce no output if at least MIN_SPACE GB is available."))
+        .arg(Arg::with_name("min-files-percent")
+            .long("min-files-percent")
+            .takes_value(true)
+            .value_name("MIN_FILES_PERCENT")
+            .help("Produce no output if at least MIN_FILES_PERCENT% of files are available."))
+        .arg(Arg::with_name("min-files")
+            .long("min-files")
+            .takes_value(true)
+            .value_name("MIN_FILES")
+            .help("Produce no output if at least MIN_FILES files are available."))
         .arg(Arg::with_name("zsh")
             .long("zsh")
-            .help("Defaults for using in the zsh right prompt, equivalent to --min-percent=5 --min-space=5."))
+            .help("Defaults for using in the zsh right prompt, equivalent to --min-percent=5 --min-space=5 --min-files=5000."))
         .arg(Arg::with_name("PATH"))
-    //TODO options (except --notify)
 }
 
 fn main() -> Result<(), Error> {
@@ -76,12 +88,21 @@ fn main() -> Result<(), Error> {
         || Ok(if matches.is_present("zsh") { ByteSize::gib(5) } else if matches.is_present("min-percent") { ByteSize::b(0) } else { ByteSize::b(u64::max_value()) }),
         |min_space| min_space.parse::<u64>().map(|min_space| ByteSize::gib(min_space))
     )?;
+    let min_files_fraction = matches.value_of("min-files-percent").map_or_else(
+        || Ok(if matches.is_present("zsh") { 0.05 } else if matches.is_present("min-files") { 0.0 } else { 1.0 }),
+        |min_files_percent| min_files_percent.parse::<f64>().map(|min_files_percent| min_files_percent / 100.0)
+    )?;
+    let min_files = matches.value_of("min-files").map_or_else(
+        || Ok(if matches.is_present("zsh") { 5000 } else if matches.is_present("min-files-percent") { 0 } else { usize::max_value() }),
+        |min_files| min_files.parse()
+    )?;
     let path = matches.value_of("PATH").map_or(
         Ok(Path::new("/").to_owned()),
         |path| path.parse()
     )?;
     let fs = System::new().mount_at(path)?;
-    if fs.avail < min_space || (fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) < min_fraction {
+    if fs.avail < min_space || (fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) < min_fraction
+    || fs.files_avail < min_files || (fs.files_avail as f64 / fs.files_total as f64) < min_files_fraction {
         if matches.is_present("quiet") {
             exit(1);
         } else if matches.is_present("verbose") {
@@ -89,8 +110,15 @@ fn main() -> Result<(), Error> {
             println!("{} bytes free", fs.avail.as_u64());
             println!("{} bytes total", fs.total.as_u64());
             println!("{} percent", (100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) as u8);
+            println!("{} files free", fs.files_avail);
+            println!("{} files total", fs.files_total);
+            println!("{} percent", (100.0 * fs.files_avail as f64 / fs.files_total as f64) as u8);
         } else if matches.is_present("bytes") {
             println!("{}", fs.avail.as_u64());
+        } else if matches.is_present("files") {
+            println!("{}", fs.files_avail);
+        } else if fs.files_avail < min_files || (fs.files_avail as f64 / fs.files_total as f64) < min_files_fraction {
+            println!("[disk: {} ({} files)]", fs.avail, fs.files_avail);
         } else {
             println!("[disk: {}]", fs.avail);
         }
