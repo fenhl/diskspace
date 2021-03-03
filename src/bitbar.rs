@@ -1,3 +1,6 @@
+#![deny(rust_2018_idioms, unused, unused_import_braces, unused_lifetimes, unused_qualifications, warnings)]
+#![forbid(unsafe_code)]
+
 use {
     std::{
         collections::BTreeMap,
@@ -6,21 +9,21 @@ use {
         io,
         path::{
             Path,
-            PathBuf
-        }
+            PathBuf,
+        },
     },
     bytesize::ByteSize,
     derive_more::From,
     serde_derive::Deserialize,
     systemstat::{
         Platform,
-        System
+        System,
     },
     bitbar::{
         ContentItem,
         Menu,
-        MenuItem
-    }
+        MenuItem,
+    },
 };
 
 trait ResultNeverExt<T> {
@@ -31,7 +34,7 @@ impl<T> ResultNeverExt<T> for Result<T, Infallible> {
     fn never_unwrap(self) -> T {
         match self {
             Ok(inner) => inner,
-            Err(never) => match never {}
+            Err(never) => match never {},
         }
     }
 }
@@ -39,7 +42,7 @@ impl<T> ResultNeverExt<T> for Result<T, Infallible> {
 #[derive(Debug, From)]
 enum Error {
     Io(io::Error),
-    Json(serde_json::Error)
+    Json(serde_json::Error),
 }
 
 impl From<Infallible> for Error {
@@ -48,15 +51,24 @@ impl From<Infallible> for Error {
     }
 }
 
+impl From<Error> for Menu {
+    fn from(e: Error) -> Menu {
+        match e {
+            Error::Io(e) => Menu(vec![MenuItem::new(format!("I/O error: {}", e))]),
+            Error::Json(e) => Menu(vec![MenuItem::new(format!("JSON error: {}", e))]),
+        }
+    }
+}
+
 #[derive(Debug, Default, Deserialize)]
 struct Config {
     #[serde(default)]
-    diskspace: ConfigDiskSpace
+    diskspace: ConfigDiskSpace,
 }
 
 #[derive(Debug, Default, Deserialize)]
 struct ConfigDiskSpace {
-    volumes: Option<Vec<PathBuf>>
+    volumes: Option<Vec<PathBuf>>,
 }
 
 impl Config {
@@ -65,7 +77,7 @@ impl Config {
         for cfg_dir in dirs {
             let path = cfg_dir.join("fenhl/syncbin.json");
             if path.exists() {
-                return Ok(serde_json::from_reader(File::open(path)?)?);
+                return Ok(serde_json::from_reader(File::open(path)?)?)
             }
         }
         Ok(Config::default())
@@ -76,7 +88,8 @@ impl Config {
     }
 }
 
-fn bitbar() -> Result<Menu, Error> {
+#[bitbar::main(error_template_image = "../assets/disk.png")]
+fn main() -> Result<Menu, Error> {
     let sys = System::new();
     let volumes = Config::new()?
         .volumes()
@@ -91,22 +104,9 @@ fn bitbar() -> Result<Menu, Error> {
             volumes.into_iter().map(|(vol, fs)| MenuItem::new(format!("{}: {}% ({}, {} files)", vol.display(), (100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) as u8, fs.avail, fs.files_avail)))
         ).chain(vec![
             MenuItem::Sep,
-            ContentItem::new("Open DaisyDisk").command(["/usr/bin/open", "-a", "DaisyDisk"]).into()
+            ContentItem::new("Open DaisyDisk").command(["/usr/bin/open", "-a", "DaisyDisk"]).into(),
         ]).collect()
     } else {
         Menu::default()
     })
-}
-
-fn main() {
-    match bitbar() {
-        Ok(menu) => { print!("{}", menu); }
-        Err(e) => {
-            print!("{}", Menu(vec![
-                ContentItem::new("?").template_image(&include_bytes!("../assets/disk.png")[..]).never_unwrap().into(),
-                MenuItem::Sep,
-                MenuItem::new(format!("{:?}", e))
-            ]));
-        }
-    }
 }
