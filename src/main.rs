@@ -8,44 +8,43 @@ use {
         process::exit,
     },
     bytesize::ByteSize,
-    structopt::StructOpt,
     systemstat::{
         Platform,
         System,
     },
 };
 
-#[derive(StructOpt)]
+#[derive(clap::Parser)]
 struct Args {
     /// Produce no output unless an error occurs during the calculation. Exit status will be 1 if less than --min-percent or --min-space available.
-    #[structopt(short, long)]
+    #[clap(short, long)]
     quiet: bool,
     /// Produce more detailed output
-    #[structopt(short, long)]
+    #[clap(short, long)]
     verbose: bool,
     /// Print the raw number of bytes instead of a human-readable format. Ignored if --verbose is given.
-    #[structopt(long)]
+    #[clap(long)]
     bytes: bool,
     /// Print the raw number of available files instead of a human-readable format. Ignored if --verbose or --bytes is given.
-    #[structopt(long)]
+    #[clap(long)]
     files: bool,
     /// Produce no output if at least MIN_PERCENT% of disk space is available.
-    #[structopt(long)]
+    #[clap(long)]
     min_percent: Option<f64>,
     /// Produce no output if at least MIN_SPACE GB is available.
-    #[structopt(long)]
+    #[clap(long)]
     min_space: Option<u64>,
     /// Produce no output if at least MIN_FILES_PERCENT% of files are available.
-    #[structopt(long)]
+    #[clap(long)]
     min_files_percent: Option<f64>,
     /// Produce no output if at least MIN_FILES files are available.
-    #[structopt(long)]
+    #[clap(long)]
     min_files: Option<usize>,
     /// Defaults for using in the zsh right prompt, equivalent to --min-percent=5 --min-space=5 --min-files=5000.
-    #[structopt(long)]
+    #[clap(long)]
     zsh: bool,
     /// The mount path of the partition whose space to check.
-    #[structopt(parse(from_os_str), default_value = "/")]
+    #[clap(parse(from_os_str), default_value = "/")]
     path: PathBuf,
 }
 

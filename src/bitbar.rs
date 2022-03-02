@@ -12,6 +12,11 @@ use {
             PathBuf,
         },
     },
+    bitbar::{
+        ContentItem,
+        Menu,
+        MenuItem,
+    },
     bytesize::ByteSize,
     derive_more::From,
     serde_derive::Deserialize,
@@ -19,25 +24,7 @@ use {
         Platform,
         System,
     },
-    bitbar::{
-        ContentItem,
-        Menu,
-        MenuItem,
-    },
 };
-
-trait ResultNeverExt<T> {
-    fn never_unwrap(self) -> T;
-}
-
-impl<T> ResultNeverExt<T> for Result<T, Infallible> {
-    fn never_unwrap(self) -> T {
-        match self {
-            Ok(inner) => inner,
-            Err(never) => match never {},
-        }
-    }
-}
 
 #[derive(Debug, From)]
 enum Error {
@@ -104,7 +91,7 @@ fn main() -> Result<Menu, Error> {
             volumes.into_iter().map(|(vol, fs)| MenuItem::new(format!("{}: {}% ({}, {} files)", vol.display(), (100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) as u8, fs.avail, fs.files_avail)))
         ).chain(vec![
             MenuItem::Sep,
-            ContentItem::new("Open DaisyDisk").command(["/usr/bin/open", "-a", "DaisyDisk"]).into(),
+            ContentItem::new("Open DaisyDisk").command(["/usr/bin/open", "-a", "DaisyDisk"])?.into(),
         ]).collect()
     } else {
         Menu::default()
