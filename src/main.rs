@@ -60,7 +60,7 @@ fn main(args: Args) -> io::Result<()> {
         if args.quiet {
             exit(1);
         } else if args.verbose {
-            println!("Available disk space: {}", fs.avail);
+            println!("Available disk space: {}", fs.avail.to_string_as(true));
             println!("{} bytes free", fs.avail.as_u64());
             println!("{} bytes total", fs.total.as_u64());
             println!("{:.2} percent", 100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64);
@@ -72,9 +72,9 @@ fn main(args: Args) -> io::Result<()> {
         } else if args.files {
             println!("{}", fs.files_avail);
         } else if fs.files_avail < min_files || (fs.files_avail as f64 / fs.files_total as f64) < min_files_fraction {
-            println!("[disk: {} ({} files)]", fs.avail, fs.files_avail);
+            println!("[disk: {} ({} files)]", fs.avail.to_string_as(true), fs.files_avail);
         } else {
-            println!("[disk: {}]", fs.avail);
+            println!("[disk: {}]", fs.avail.to_string_as(true));
         }
     }
     Ok(())

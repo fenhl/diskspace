@@ -84,10 +84,10 @@ fn main() -> Result<Menu, Error> {
         .collect::<Result<BTreeMap<_, _>, _>>()?;
     Ok(if volumes.iter().any(|(_, fs)| fs.avail < ByteSize::gib(5) || (fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) < 0.05 || fs.files_avail < 5000 || (fs.files_avail as f64 / fs.files_total as f64) < 0.05) {
         vec![
-            ContentItem::new(volumes.iter().map(|(_, fs)| fs.avail).min().expect("no volumes")).template_image(&include_bytes!("../assets/disk.png")[..])?.into(),
+            ContentItem::new(volumes.iter().map(|(_, fs)| fs.avail).min().expect("no volumes").to_string_as(true)).template_image(&include_bytes!("../assets/disk.png")[..])?.into(),
             MenuItem::Sep,
         ].into_iter().chain(
-            volumes.into_iter().map(|(vol, fs)| MenuItem::new(format!("{}: {}% ({}, {} files)", vol.display(), (100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) as u8, fs.avail, fs.files_avail)))
+            volumes.into_iter().map(|(vol, fs)| MenuItem::new(format!("{}: {}% ({}, {} files)", vol.display(), (100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) as u8, fs.avail.to_string_as(true), fs.files_avail)))
         ).chain(vec![
             MenuItem::Sep,
             ContentItem::new("Open DaisyDisk").command(["/usr/bin/open", "-a", "DaisyDisk"])?.into(),
