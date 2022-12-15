@@ -4,6 +4,10 @@ version = "2.0.1"
 authors = ["Fenhl <fenhl@fenhl.net>"]
 edition = "2021"
 
+[profile.release]
+lto = true
+strip = true
+
 [[bin]]
 name = "diskspace"
 path = "src/main.rs"
