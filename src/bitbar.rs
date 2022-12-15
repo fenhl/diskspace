@@ -18,7 +18,6 @@ use {
         MenuItem,
     },
     bytesize::ByteSize,
-    derive_more::From,
     serde_derive::Deserialize,
     systemstat::{
         Platform,
@@ -26,10 +25,10 @@ use {
     },
 };
 
-#[derive(Debug, From)]
+#[derive(Debug, thiserror::Error)]
 enum Error {
-    Io(io::Error),
-    Json(serde_json::Error),
+    #[error(transparent)] Io(#[from] io::Error),
+    #[error(transparent)] Json(#[from] serde_json::Error),
 }
 
 impl From<Infallible> for Error {
@@ -41,8 +40,8 @@ impl From<Infallible> for Error {
 impl From<Error> for Menu {
     fn from(e: Error) -> Menu {
         match e {
-            Error::Io(e) => Menu(vec![MenuItem::new(format!("I/O error: {}", e))]),
-            Error::Json(e) => Menu(vec![MenuItem::new(format!("JSON error: {}", e))]),
+            Error::Io(e) => Menu(vec![MenuItem::new(format!("I/O error: {e}"))]),
+            Error::Json(e) => Menu(vec![MenuItem::new(format!("JSON error: {e}"))]),
         }
     }
 }

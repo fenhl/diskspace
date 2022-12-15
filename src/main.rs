@@ -44,7 +44,7 @@ struct Args {
     #[clap(long)]
     zsh: bool,
     /// The mount path of the partition whose space to check.
-    #[clap(parse(from_os_str), default_value = "/")]
+    #[clap(default_value = "/")]
     path: PathBuf,
 }
 

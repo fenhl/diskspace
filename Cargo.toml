@@ -17,21 +17,17 @@ bytesize = "1"
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
-systemstat = "0.1"
+systemstat = "0.2"
+thiserror = "1"
 xdg-basedir = "1"
 
 [dependencies.bitbar]
-version = "0.7"
+version = "0.8"
 features = ["base64"]
 
 [dependencies.clap]
-version = "3"
+version = "4"
 features = ["derive"]
-
-[dependencies.derive_more]
-version = "0.99"
-default-features = false
-features = ["from"]
 
 [dependencies.wheel]
 git = "https://github.com/fenhl/wheel"
