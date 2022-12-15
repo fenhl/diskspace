@@ -63,10 +63,10 @@ fn main(args: Args) -> io::Result<()> {
             println!("Available disk space: {}", fs.avail);
             println!("{} bytes free", fs.avail.as_u64());
             println!("{} bytes total", fs.total.as_u64());
-            println!("{} percent", (100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64) as u8);
+            println!("{:.2} percent", 100.0 * fs.avail.as_u64() as f64 / fs.total.as_u64() as f64);
             println!("{} files free", fs.files_avail);
             println!("{} files total", fs.files_total);
-            println!("{} percent", (100.0 * fs.files_avail as f64 / fs.files_total as f64) as u8);
+            println!("{:.2} percent", 100.0 * fs.files_avail as f64 / fs.files_total as f64);
         } else if args.bytes {
             println!("{}", fs.avail.as_u64());
         } else if args.files {
