@@ -27,8 +27,6 @@ path = "src/systray.rs"
 bitbar = { version = "0.8", features = ["base64"] }
 bytesize = "1"
 clap = { version = "4", features = ["derive"] }
-native-windows-derive = "1.0.5"
-native-windows-gui = { version = "1.0.13", default-features = false, features = ["tray-notification", "high-dpi", "cursor", "message-window", "menu", "notice"] }
 parking_lot = "0.12.1"
 registry = "1.2.3"
 serde = "1"
@@ -39,3 +37,7 @@ thiserror = "1"
 tokio = { version = "1.33.0", features = ["time", "sync", "parking_lot"] }
 wheel = { git = "https://github.com/fenhl/wheel", branch = "main" }
 xdg-basedir = "1"
+
+[target.'cfg(windows)'.dependencies]
+native-windows-derive = "1.0.5"
+native-windows-gui = { version = "1.0.13", default-features = false, features = ["tray-notification", "high-dpi", "cursor", "message-window", "menu", "notice"] }

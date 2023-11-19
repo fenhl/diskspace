@@ -1,3 +1,5 @@
+#![cfg(windows)]
+
 #![deny(rust_2018_idioms, unused, unused_import_braces, unused_lifetimes, unused_qualifications, warnings)]
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
