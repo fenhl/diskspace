@@ -8,6 +8,7 @@ use {
 
 fn main() -> io::Result<()> {
     if env::var_os("CARGO_CFG_WINDOWS").is_some() {
+        println!("cargo:rerun-if-changed=assets/manifest.xml");
         WindowsResource::new()
             //TODO icon?
             //TODO version info?

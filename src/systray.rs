@@ -1,6 +1,7 @@
 #![cfg(windows)]
 
 #![deny(rust_2018_idioms, unused, unused_import_braces, unused_lifetimes, unused_qualifications, warnings)]
+#![forbid(unsafe_code)]
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
@@ -27,6 +28,7 @@ use {
         runtime::Runtime,
         time::sleep,
     },
+    wheel::traits::CommandExt as _,
 };
 
 #[derive(Default, nwd::NwgUi)]
@@ -52,6 +54,11 @@ pub struct SystemTray {
     tray: nwg::TrayNotification,
     #[nwg_control(parent: window, popup: true)]
     tray_menu: nwg::Menu,
+    #[nwg_control(parent: tray_menu, text: "Cargo Sweep")]
+    #[nwg_events(OnMenuItemSelected: [SystemTray::cargo_sweep])]
+    item_cargo_sweep: nwg::MenuItem,
+    #[nwg_control(parent: tray_menu)]
+    sep: nwg::MenuSeparator,
     #[nwg_control(parent: tray_menu, text: "Exit")]
     #[nwg_events(OnMenuItemSelected: [SystemTray::exit])]
     item_exit: nwg::MenuItem,
@@ -61,6 +68,40 @@ impl SystemTray {
     fn init(&self) {
         self.set_icon();
         self.runtime.as_ref().expect("failed to create tokio runtime").spawn(maintain(Arc::clone(&self.volumes), self.update_notice.sender()));
+    }
+
+    fn cargo_sweep(&self) {
+        Command::new("wt")
+            .arg("new-tab")
+            .arg("C:\\Program Files\\PowerShell\\7\\pwsh.exe")
+            .arg("-c")
+            .arg("cd C:\\Users\\fenhl\\git && cargo sweep -ir")
+            .create_no_window()
+            .spawn().expect("failed to open Windows Terminal");
+        Command::new("wt")
+            .arg("new-tab")
+            .arg("--profile")
+            .arg("debian-m2")
+            .arg("C:\\WINDOWS\\system32\\wsl.exe")
+            .arg("-d")
+            .arg("debian-m2")
+            .arg("zsh")
+            .arg("-c")
+            .arg("cd wslgit && cargo sweep -ir && cd /opt/git && cargo sweep -ir")
+            .create_no_window()
+            .spawn().expect("failed to open Windows Terminal");
+        Command::new("wt")
+            .arg("new-tab")
+            .arg("--profile")
+            .arg("ubuntu-m2")
+            .arg("C:\\WINDOWS\\system32\\wsl.exe")
+            .arg("-d")
+            .arg("ubuntu-m2")
+            .arg("zsh")
+            .arg("-c")
+            .arg("cd wslgit && cargo sweep -ir && cd /opt/git && cargo sweep -ir")
+            .create_no_window()
+            .spawn().expect("failed to open Windows Terminal");
     }
 
     fn set_icon(&self) {
@@ -88,7 +129,7 @@ impl SystemTray {
     }
 
     fn open_windirstat(&self) {
-        Command::new("C:\\Users\\fenhl\\scoop\\shims\\windirstat.exe").spawn().expect("failed to open WinDirStat");
+        Command::new("C:\\Users\\fenhl\\scoop\\shims\\windirstat.exe").create_no_window().spawn().expect("failed to open WinDirStat");
     }
 
     fn exit(&self) {
@@ -129,7 +170,6 @@ async fn maintain(volumes: Arc<Mutex<BTreeMap<&'static str, Filesystem>>>, updat
 }
 
 fn gui_main() -> Result<(), nwg::NwgError> {
-    #[allow(deprecated)] unsafe { nwg::set_dpi_awareness() } // this is deprecated in favor of editing something called the application manifest, which systray-diskspace doesn't have
     nwg::init()?;
     let app = SystemTray::build_ui(SystemTray {
         runtime: Runtime::new().ok(),
