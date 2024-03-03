@@ -57,6 +57,9 @@ pub struct SystemTray {
     #[nwg_control(parent: tray_menu, text: "Cargo Sweep")]
     #[nwg_events(OnMenuItemSelected: [SystemTray::cargo_sweep])]
     item_cargo_sweep: nwg::MenuItem,
+    #[nwg_control(parent: tray_menu, text: "Scoop Cleanup")]
+    #[nwg_events(OnMenuItemSelected: [SystemTray::scoop_cleanup])]
+    item_scopop_cleanup: nwg::MenuItem,
     #[nwg_control(parent: tray_menu)]
     sep: nwg::MenuSeparator,
     #[nwg_control(parent: tray_menu, text: "Exit")]
@@ -73,6 +76,8 @@ impl SystemTray {
     fn cargo_sweep(&self) {
         Command::new("wt")
             .arg("new-tab")
+            .arg("--profile")
+            .arg("september")
             .arg("C:\\Program Files\\PowerShell\\7\\pwsh.exe")
             .arg("-c")
             .arg("cd C:\\Users\\fenhl\\git && cargo sweep -ir")
@@ -100,6 +105,18 @@ impl SystemTray {
             .arg("zsh")
             .arg("-c")
             .arg("cd wslgit && cargo sweep -ir && cd /opt/git && cargo sweep -ir")
+            .create_no_window()
+            .spawn().expect("failed to open Windows Terminal");
+    }
+
+    fn scoop_cleanup(&self) {
+        Command::new("wt")
+            .arg("new-tab")
+            .arg("--profile")
+            .arg("september")
+            .arg("C:\\Program Files\\PowerShell\\7\\pwsh.exe")
+            .arg("-c")
+            .arg("scoop cleanup --all --cache")
             .create_no_window()
             .spawn().expect("failed to open Windows Terminal");
     }
