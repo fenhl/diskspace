@@ -1,6 +1,6 @@
 [package]
 name = "diskspace"
-version = "2.0.1"
+version = "2.0.2"
 authors = ["Fenhl <fenhl@fenhl.net>"]
 edition = "2021"
 

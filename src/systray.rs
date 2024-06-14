@@ -34,6 +34,7 @@ use {
 #[derive(Default, nwd::NwgUi)]
 pub struct SystemTray {
     runtime: Option<Runtime>,
+    always_show: bool,
     volumes: Arc<Mutex<BTreeMap<&'static str, Filesystem>>>,
     #[nwg_control]
     #[nwg_events(OnInit: [SystemTray::init])]
@@ -78,7 +79,8 @@ impl SystemTray {
             .arg("new-tab")
             .arg("--profile")
             .arg("september")
-            .arg("C:\\Program Files\\PowerShell\\7\\pwsh.exe")
+            .arg("C:\\Users\\fenhl\\scoop\\apps\\pwsh\\current\\pwsh.exe")
+            .arg("-NoLogo")
             .arg("-c")
             .arg("cd C:\\Users\\fenhl\\git && cargo sweep -ir")
             .create_no_window()
@@ -114,7 +116,8 @@ impl SystemTray {
             .arg("new-tab")
             .arg("--profile")
             .arg("september")
-            .arg("C:\\Program Files\\PowerShell\\7\\pwsh.exe")
+            .arg("C:\\Users\\fenhl\\scoop\\apps\\pwsh\\current\\pwsh.exe")
+            .arg("-NoLogo")
             .arg("-c")
             .arg("scoop cleanup --all --cache")
             .create_no_window()
@@ -126,7 +129,7 @@ impl SystemTray {
             .and_then(|key| key.value("SystemUsesLightTheme").ok())
             .map_or(false, |data| matches!(data, registry::Data::U32(1)));
         let volumes = self.volumes.lock();
-        self.tray.set_visibility(!volumes.is_empty());
+        self.tray.set_visibility(self.always_show || !volumes.is_empty());
         self.tray.set_icon(match (is_light, nwg::scale_factor() >= 1.5) {
             (true, true) => &self.logo_black_32,
             (true, false) => &self.logo_black_16,
@@ -186,10 +189,18 @@ async fn maintain(volumes: Arc<Mutex<BTreeMap<&'static str, Filesystem>>>, updat
     }
 }
 
-fn gui_main() -> Result<(), nwg::NwgError> {
+#[derive(clap::Parser)]
+#[clap(version)]
+struct Args {
+    #[clap(long)]
+    always_show: bool,
+}
+
+fn gui_main(Args { always_show }: Args) -> Result<(), nwg::NwgError> {
     nwg::init()?;
     let app = SystemTray::build_ui(SystemTray {
         runtime: Runtime::new().ok(),
+        always_show,
         ..SystemTray::default()
     })?;
     nwg::dispatch_thread_events();
@@ -197,8 +208,9 @@ fn gui_main() -> Result<(), nwg::NwgError> {
     Ok(())
 }
 
-fn main() {
-    if let Err(e) = gui_main() {
+#[wheel::main]
+fn main(args: Args) {
+    if let Err(e) = gui_main(args) {
         nwg::fatal_message(concat!(env!("CARGO_PKG_NAME"), ": fatal error"), &format!("{e}\nDebug info: ctx = main, {e:?}"))
     }
 }
