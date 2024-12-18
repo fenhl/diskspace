@@ -9,7 +9,7 @@ lto = true
 strip = true
 
 [build-dependencies]
-winres = "0.1"
+winresource = "0.1"
 
 [[bin]]
 name = "diskspace"
