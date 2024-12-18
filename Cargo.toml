@@ -24,7 +24,7 @@ name = "systray-diskspace"
 path = "src/systray.rs"
 
 [dependencies]
-bitbar = { version = "0.8", features = ["base64"] }
+bitbar = { version = "0.10", features = ["base64"] }
 bytesize = "1"
 clap = { version = "4", features = ["derive"] }
 parking_lot = "0.12.1"
