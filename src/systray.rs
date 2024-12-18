@@ -149,7 +149,7 @@ impl SystemTray {
     }
 
     fn open_windirstat(&self) {
-        Command::new("C:\\Users\\fenhl\\scoop\\shims\\windirstat.exe").create_no_window().spawn().expect("failed to open WinDirStat");
+        Command::new("C:\\Users\\fenhl\\scoop\\apps\\windirstat\\current\\WinDirStat.exe").create_no_window().spawn().expect("failed to open WinDirStat");
     }
 
     fn exit(&self) {
