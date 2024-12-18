@@ -684,7 +684,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "systemstat",
- "thiserror 1.0.69",
+ "thiserror 2.0.8",
  "tokio",
  "wheel",
  "winresource",
