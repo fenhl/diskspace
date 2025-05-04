@@ -25,7 +25,7 @@ path = "src/systray.rs"
 
 [dependencies]
 bitbar = { version = "0.10", features = ["base64"] }
-bytesize = "1"
+bytesize = "1" # transitive dependency of systemstat
 clap = { version = "4", features = ["derive"] }
 parking_lot = "0.12.1"
 registry = "1.2.3"
