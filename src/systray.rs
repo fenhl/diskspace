@@ -39,16 +39,18 @@ pub struct SystemTray {
     #[nwg_control]
     #[nwg_events(OnInit: [SystemTray::init])]
     window: nwg::MessageWindow,
+    #[nwg_resource]
+    embed: nwg::EmbedResource,
     #[nwg_control]
     #[nwg_events(OnNotice: [SystemTray::set_icon])]
     update_notice: nwg::Notice,
-    #[nwg_resource(source_file: Some(concat!(env!("CARGO_MANIFEST_DIR"), "/assets/logo-black-16.ico")))]
+    #[nwg_resource(source_embed: Some(&data.embed), source_embed_str: Some("LOGO_BLACK_16"))]
     logo_black_16: nwg::Icon,
-    #[nwg_resource(source_file: Some(concat!(env!("CARGO_MANIFEST_DIR"), "/assets/logo-black-32.ico")))]
+    #[nwg_resource(source_embed: Some(&data.embed), source_embed_str: Some("LOGO_BLACK_32"))]
     logo_black_32: nwg::Icon,
-    #[nwg_resource(source_file: Some(concat!(env!("CARGO_MANIFEST_DIR"), "/assets/logo-white-16.ico")))]
+    #[nwg_resource(source_embed: Some(&data.embed), source_embed_str: Some("LOGO_WHITE_16"))]
     logo_white_16: nwg::Icon,
-    #[nwg_resource(source_file: Some(concat!(env!("CARGO_MANIFEST_DIR"), "/assets/logo-white-32.ico")))]
+    #[nwg_resource(source_embed: Some(&data.embed), source_embed_str: Some("LOGO_WHITE_32"))]
     logo_white_32: nwg::Icon,
     #[nwg_control(icon: Some(&data.logo_white_16), tip: Some("checking disk space…"))]
     #[nwg_events(MousePressLeftUp: [SystemTray::open_windirstat], OnContextMenu: [SystemTray::show_menu])]
