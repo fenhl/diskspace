@@ -13,6 +13,13 @@
             };
         });
     in {
+        devShells = forEachSupportedSystem ({ pkgs, ... }: {
+            default = pkgs.mkShell {
+                packages = with pkgs; [
+                    cargo
+                ];
+            };
+        });
         packages = forEachSupportedSystem ({ pkgs, ... }: let
             manifest = (pkgs.lib.importTOML ./Cargo.toml).package;
         in {
